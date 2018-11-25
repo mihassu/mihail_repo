@@ -4,7 +4,7 @@ import participants.Participant;
 
 public class Course {
 
-    Obstacle[] stage1 = new Obstacle[4];
+    private Obstacle[] stage1 = new Obstacle[4];
 
     public Course() {
         this.stage1[0] = new Cross(200);
