@@ -1,0 +1,177 @@
+﻿public class MainClass {
+    public static void main(String[] args) {
+
+        // п.1
+        // п.2
+        String[] fruits = {"apple", "orange", "banana"};
+        Integer[] nums = {1, 2, 3,};
+
+        System.out.println(arrToArrayList(fruits));
+        System.out.println(arrToArrayList(nums));
+
+        changeElementPosition(fruits, 0, 3);
+        printArray(fruits);
+        changeElementPosition(nums, 2, 1);
+        printArray(nums);
+
+        // п.3
+        FruitBox<Apple> appleBox = new FruitBox<>("Яблоки");
+        FruitBox<Orange> orangeBox = new FruitBox<>("Апельсины");
+
+
+        Apple apple1 = new Apple(0.5);
+        Apple apple2 = new Apple(0.2);
+
+        appleBox.putToFruitBox(apple1, 2);
+        appleBox.putToFruitBox(apple2, 3);
+
+        System.out.println("Вес коробки " + appleBox.getName() + ": " + appleBox.getBoxWeight()); //вес коробки с яблоками
+
+        Orange orange1 = new Orange(0.2);
+        Orange orange2 = new Orange(0.5);
+
+        //appleBox.putToFruitBox(orange1, 5); //нельзя
+        orangeBox.putToFruitBox(orange1, 3);
+        orangeBox.putToFruitBox(orange2, 2);
+
+        System.out.println("Вес коробки " + orangeBox.getName() + ": " + orangeBox.getBoxWeight()); //вес коробки с апельсинами
+
+        System.out.println(appleBox.compareBoxes(orangeBox)); // сравнение весов коробок
+
+        appleBox.boxInfo();
+
+        FruitBox<Apple> appleBox2 = new FruitBox<>("Яблоки2");
+        appleBox.displaceToBox(appleBox2); //перемечение из одной коробки в другую
+        appleBox.boxInfo();
+        appleBox2.boxInfo();
+
+
+
+    }
+
+    // п.1
+    // п.2
+    //метод меняющий местами элементы массива
+    public static <T> T[] changeElementPosition(T[] arr, int firstPosition, int secondPosition) {
+        T[] tempArray = arr; //вроде с эксепшеном массив не изменим, но на всякий случай
+        try {
+            T temp = arr[secondPosition];
+            arr[secondPosition] = arr[firstPosition];
+            arr[firstPosition] = temp;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("Перемещение элемента не удалось");
+            return tempArray;
+        }
+        return arr;
+    }
+
+    //метод преобразующий массив с любым типом данных в ArrayList
+    public static <T> ArrayList arrToArrayList(T[] arr) {
+        ArrayList<T> arrList = new ArrayList<>(Arrays.asList(arr));
+        return arrList;
+    }
+
+    public static <T> void printArray(T[] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            System.out.print(arr[i] + " ");
+        }
+        System.out.println();
+    }
+
+
+}
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class FruitBox<T extends Fruits > {
+    private List<T> box;
+    private String name;
+
+    public FruitBox(String name) {
+        this.name = name;
+        box = new ArrayList<>();
+
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<T> getBox() {
+        return box;
+    }
+
+    public void putToFruitBox(T obj, int count) {
+        for (int i = 0; i < count; i++) {
+            box.add(obj);
+        }
+    }
+
+    public double getBoxWeight(){
+        double sum = 0.0;
+        for (T o: this.box) {
+            sum += o.getWeight();
+        }
+
+        return sum;
+    }
+
+    public boolean compareBoxes(FruitBox<? extends Fruits> box) {
+        return Math.abs(this.getBoxWeight() - box.getBoxWeight()) < 0.0001;
+    }
+
+    public void boxInfo() {
+        int i = 1;
+        System.out.println(name + ": ");
+        for (T o: this.box) {
+            System.out.println(i++ + ") " + o.getWeight());
+        }
+    }
+
+    public void displaceToBox(FruitBox<T> box) {
+
+        for (T o: this.box) {
+            box.getBox().add(o);
+        }
+
+        this.box.clear();
+
+    }
+
+
+}
+
+
+public class Fruits {
+    private double weight;
+
+
+    public Fruits(double weight) {
+        this.weight = weight;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+}
+
+
+public class Apple extends Fruits {
+
+   public Apple(double weight) {
+      super(weight);
+
+   }
+
+}
+
+
+public class Orange extends Fruits {
+
+    public Orange(double weight) {
+        super(weight);
+    }
+}
+
